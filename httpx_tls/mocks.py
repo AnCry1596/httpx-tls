@@ -1,19 +1,4 @@
-try:
-    from tlslite import TLSConnection
-except ImportError:
-    # Handle asyncore compatibility for Python 3.12+
-    import sys
-    if sys.version_info >= (3, 12):
-        try:
-            import asyncore  # This will fail
-        except ImportError:
-            # Create a minimal asyncore shim for tlslite compatibility
-            import types
-            asyncore = types.ModuleType('asyncore')
-            asyncore.dispatcher = object  # Minimal shim
-            sys.modules['asyncore'] = asyncore
-
-    from tlslite import TLSConnection
+from tlslite import TLSConnection
 from ssl import SSLError, SSLContext
 import errno
 import time
