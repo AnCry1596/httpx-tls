@@ -95,7 +95,11 @@ class TLSProfile(Profile):
 
         # Make sure extensions, groups and cipher lists only contain unique values
         self.assert_no_duplicates()
-        settings = HandshakeSettings()
+        settings = HandshakeSettings(
+            cipher_order=self.ciphers,
+            extension_order=self.extensions,
+            groups_order=self.groups
+        )
 
         # First, we set the minimum tls version we require
         self._set_tls_version(settings)
@@ -156,7 +160,8 @@ class TLSProfile(Profile):
     def _set_order(self, settings: HandshakeSettings):
         settings.cipher_order = self.ciphers
         settings.groups_order = self.groups
-        settings.extension_order = self.extensions
+        # Extension order disabled to prevent duplicate extension errors
+        # settings.extension_order = self.extensions
 
     def _set_extensions(self, settings):
 
