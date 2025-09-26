@@ -169,9 +169,9 @@ The enhanced fingerprint database now supports a comprehensive range of browser 
 - **Improved Anti-Detection**: Successfully bypasses Cloudflare protection on sites like audiobooks.com
 - **Modified tlslite-ng**: Custom TLS library with precise cipher/extension order control
 
-## Thanks
+## Special Thanks To
 
 - [charxhit](https://github.com/charxhit) for the original [httpx-tls](https://github.com/charxhit/httpx-tls)
-- [tlsfuzzer](https://github.com/tlsfuzzer) for [tlslite-ng](https://github.com/tlsfuzzer/tlslite-ng)
+- [tlsfuzzer](https://github.com/tlsfuzzer) for the original [tlslite-ng](https://github.com/tlsfuzzer/tlslite-ng)
 - [lexiforest](https://github.com/lexiforest) for [curl_cffi](https://github.com/lexiforest/curl_cffi) fingerprint database insights
-
+- [encode](https://github.com/encode) for [httpx](https://github.com/encode/httpx)
