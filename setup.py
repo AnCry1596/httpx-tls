@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setup(
     name="httpx-tls",
-    version="0.0.1",
+    version="0.0.2",
     author="Charchit Agarwal",
     author_email="charchit.a00@gmail.com",
-    url="https://github.com/charxhit/httpx-tls",
+    url="https://github.com/AnCry1596/httpx-tls/",
     description="Almighty patch to expose and configure low-level connection details in httpx",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -23,7 +23,7 @@ setup(
     python_requires='>=3.5',
     packages=['httpx_tls', 'httpx_tls.patch'],
     install_requires=['httpx',
-                      'tlslite-ng',
+                      'tlslite-ng @ git+https://github.com/AnCry1596/tlslite-ng.git',
                       'trio',
                       'user-agents',
                       'h2',
