@@ -144,12 +144,12 @@ httpx-tls is an ambitious project which currently does not have a comprehensive 
 The enhanced fingerprint database now supports a comprehensive range of browser versions:
 
 ### Chrome/Chromium
-- Versions 73-136
+- Versions 73-140
 - Desktop and Android variants
 - Latest TLS 1.3 extensions and cipher suites
 
 ### Firefox
-- Versions 65-135
+- Versions 65-145
 - Desktop and mobile variants
 - Support for Firefox-specific TLS extensions
 
@@ -159,7 +159,7 @@ The enhanced fingerprint database now supports a comprehensive range of browser 
 - Support for Safari-specific TLS behaviors
 
 ### Edge
-- Versions 99-101
+- Versions 99-140?
 - Built on Chromium fingerprints
 
 ## Recent Enhancements
