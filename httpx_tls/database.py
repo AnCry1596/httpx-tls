@@ -80,7 +80,7 @@ class Browser:
                   }
     name = None
     chromium = False
-    chromium_pattern = re.compile(r' Chrome/(.+?)(?: |$)')
+    chromium_pattern = re.compile(r' (?:Chrome|CriOS)/(.+?)(?: |$)')
     reasonable = 10
 
     @classmethod
@@ -161,7 +161,10 @@ class Browser:
 
     @classmethod
     def get_chromium_version(cls, user_agent: str):
-        full = re.search(cls.chromium_pattern, user_agent).group(1)
+        match = re.search(cls.chromium_pattern, user_agent)
+        if not match:
+            raise ValueError(f"Could not find Chrome/CriOS version in user agent: {user_agent}")
+        full = match.group(1)
         major = int(full.split('.')[0])
         return major
 
