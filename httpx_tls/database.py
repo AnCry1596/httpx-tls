@@ -7,6 +7,7 @@ __all__ = ["Chrome",
            "Firefox",
            "Opera",
            "Safari",
+           "Samsung",
            "get_browser_data_class",
            "get_device_and_browser_from_ua"]
 
@@ -230,6 +231,11 @@ class Chrome(Chromium):
     name = "Chrome"
 
 
+class Samsung(Chromium):
+    name = "Samsung"
+    chromium_pattern = re.compile(r'(?:SamsungBrowser/.+? )?(?:Chrome|CriOS|EdgiOS)/(.+?)(?: |$)')
+
+
 class Firefox(Browser):
     name = "Firefox"
     ja3_versions = {
@@ -336,7 +342,8 @@ _browser_mapping = {
     'safari': Safari,
     'edge': Edge,
     'opera': Opera,
-    'firefox': Firefox
+    'firefox': Firefox,
+    'samsung': Samsung
 }
 
 
