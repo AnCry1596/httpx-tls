@@ -3,11 +3,13 @@ import user_agents
 from .constants import Flags
 
 __all__ = ["Chrome",
+           "DuckDuckGo",
            "Edge",
            "Firefox",
            "Opera",
            "Safari",
            "Samsung",
+           "Yandex",
            "get_browser_data_class",
            "get_device_and_browser_from_ua"]
 
@@ -230,10 +232,35 @@ class Edge(Chromium):
 class Chrome(Chromium):
     name = "Chrome"
 
-
 class Samsung(Chromium):
     name = "Samsung"
     chromium_pattern = re.compile(r'(?:SamsungBrowser/.+? )?(?:Chrome|CriOS|EdgiOS)/(.+?)(?: |$)')
+
+class Yandex(Chromium):
+    name = "Yandex"
+    chromium_pattern = re.compile(r'(?:Chrome|CriOS|EdgiOS)/(.+?)(?: YaBrowser/.+?)?(?:$| )')
+
+
+class DuckDuckGo(Browser):
+    name = "DuckDuckGo"
+
+    @classmethod
+    def get_ja3_from_version(cls, version: int, ios_version: int = None, flag=Flags.REASONABLE):
+        if ios_version:
+            return Safari.get_ja3_from_version(version, ios_version, flag)
+        return Chrome.get_ja3_from_version(version, ios_version, flag)
+
+    @classmethod
+    def get_akamai_str_from_version(cls, version: int, device: str, ios_version: int = None,
+                                    flag: int = Flags.REASONABLE):
+        if device == 'ios' or device == 'desktop':
+            return Safari.get_akamai_str_from_version(version, device, ios_version, flag)
+        else:
+            return Chrome.get_akamai_str_from_version(version, device, ios_version, flag)
+
+    @classmethod
+    def get_chromium_version(cls, user_agent: str):
+        return Chrome.get_chromium_version(user_agent)
 
 
 class Firefox(Browser):
@@ -327,6 +354,32 @@ def get_device_and_browser_from_ua(user_agent_str: str):
         except (AttributeError, ValueError):
             raise ValueError("could not parse the chromium version from user agent string")
 
+    # Special handling for DuckDuckGo which uses different engines on different platforms
+    elif browser_class == DuckDuckGo:
+        if device == 'ios':
+            # On iOS, DuckDuckGo uses Safari - parse iOS version
+            # ios_version is already set above
+            version = ios_version
+        elif device == 'desktop':
+            # On macOS desktop, check if it's using Safari or Chrome
+            # Try to extract Chrome version first (Windows uses Chrome)
+            try:
+                version = Chrome.get_chromium_version(user_agent_str)
+            except (AttributeError, ValueError):
+                # If no Chrome version found, it's macOS using Safari
+                # Parse Safari version from user agent
+                safari_match = re.search(r'Version/(\d+)', user_agent_str)
+                if safari_match:
+                    version = int(safari_match.group(1))
+                else:
+                    raise ValueError("could not parse Safari version from DuckDuckGo macOS user agent")
+        else:
+            # On Android, DuckDuckGo uses Chrome
+            try:
+                version = Chrome.get_chromium_version(user_agent_str)
+            except (AttributeError, ValueError):
+                raise ValueError("could not parse Chrome version from DuckDuckGo Android user agent")
+
     return device, browser, version, ios_version
 
 
@@ -339,11 +392,13 @@ def get_browser_data_class(browser: str):
 
 _browser_mapping = {
     'chrome': Chrome,
+    'duckduckgo': DuckDuckGo,
     'safari': Safari,
     'edge': Edge,
     'opera': Opera,
     'firefox': Firefox,
-    'samsung': Samsung
+    'samsung': Samsung,
+    'yandex': Yandex
 }
 
 
