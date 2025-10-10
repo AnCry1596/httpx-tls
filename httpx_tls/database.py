@@ -9,6 +9,7 @@ __all__ = ["Chrome",
            "Opera",
            "Safari",
            "Samsung",
+           "Vivaldi",
            "Yandex",
            "get_browser_data_class",
            "get_device_and_browser_from_ua"]
@@ -241,6 +242,11 @@ class Yandex(Chromium):
     chromium_pattern = re.compile(r'(?:Chrome|CriOS|EdgiOS)/(.+?)(?: YaBrowser/.+?)?(?:$| )')
 
 
+class Vivaldi(Chromium):
+    name = "Vivaldi"
+    chromium_pattern = re.compile(r'(?:Chrome|CriOS|EdgiOS)/(.+?)(?: Safari/.+?)?(?: Vivaldi/.+?)?(?:$| )')
+
+
 class DuckDuckGo(Browser):
     name = "DuckDuckGo"
 
@@ -398,6 +404,7 @@ _browser_mapping = {
     'opera': Opera,
     'firefox': Firefox,
     'samsung': Samsung,
+    'vivaldi': Vivaldi,
     'yandex': Yandex
 }
 
