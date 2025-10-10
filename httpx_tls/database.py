@@ -6,6 +6,7 @@ __all__ = ["Chrome",
            "DuckDuckGo",
            "Edge",
            "Firefox",
+           "GoogleApp",
            "Opera",
            "Safari",
            "Samsung",
@@ -269,6 +270,28 @@ class DuckDuckGo(Browser):
         return Chrome.get_chromium_version(user_agent)
 
 
+class GoogleApp(Browser):
+    name = "GoogleApp"
+
+    @classmethod
+    def get_ja3_from_version(cls, version: int, ios_version: int = None, flag=Flags.REASONABLE):
+        if ios_version:
+            return Safari.get_ja3_from_version(version, ios_version, flag)
+        return Chrome.get_ja3_from_version(version, ios_version, flag)
+
+    @classmethod
+    def get_akamai_str_from_version(cls, version: int, device: str, ios_version: int = None,
+                                    flag: int = Flags.REASONABLE):
+        if device == 'ios':
+            return Safari.get_akamai_str_from_version(version, device, ios_version, flag)
+        else:
+            return Chrome.get_akamai_str_from_version(version, device, ios_version, flag)
+
+    @classmethod
+    def get_chromium_version(cls, user_agent: str):
+        return Chrome.get_chromium_version(user_agent)
+
+
 class Firefox(Browser):
     name = "Firefox"
     ja3_versions = {
@@ -386,6 +409,19 @@ def get_device_and_browser_from_ua(user_agent_str: str):
             except (AttributeError, ValueError):
                 raise ValueError("could not parse Chrome version from DuckDuckGo Android user agent")
 
+    # Special handling for Google App (GSA) which uses different engines on different platforms
+    elif browser_class == GoogleApp:
+        if device == 'ios':
+            # On iOS, Google App uses Safari - parse iOS version
+            # ios_version is already set above
+            version = ios_version
+        else:
+            # On Android, Google App uses Chrome
+            try:
+                version = Chrome.get_chromium_version(user_agent_str)
+            except (AttributeError, ValueError):
+                raise ValueError("could not parse Chrome version from Google App Android user agent")
+
     return device, browser, version, ios_version
 
 
@@ -399,6 +435,8 @@ def get_browser_data_class(browser: str):
 _browser_mapping = {
     'chrome': Chrome,
     'duckduckgo': DuckDuckGo,
+    'google': GoogleApp,
+    'gsa': GoogleApp,
     'safari': Safari,
     'edge': Edge,
     'opera': Opera,
