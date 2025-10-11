@@ -3,7 +3,6 @@ import copy
 from httpx_tls.constants import TLSExtConstants, Http2Constants, TLSVersionConstants
 from tlslite import HandshakeSettings, constants
 from httpx_tls import database
-import struct
 
 ja3_str = '771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,' \
           '51-23-17513-13-45-65281-5-43-27-11-10-18-35-0-16-21,29-23-24,0'

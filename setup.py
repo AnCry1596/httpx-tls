@@ -25,7 +25,6 @@ setup(
     install_requires=['httpx',
                       'tlslite-ng @ git+https://github.com/AnCry1596/tlslite-ng.git',
                       'trio',
-                      'user-agents',
                       'h2',
                       'anyio']
 )
