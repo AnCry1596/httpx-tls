@@ -303,21 +303,7 @@ def get_device_and_browser_from_ua(user_agent_str: str):
             else:
                 raise ValueError("cannot parse Firefox version from user agent")
 
-    # Check for Safari/WebKit (on iOS or macOS)
-    elif device == 'ios' or ('safari' in ua_lower and 'chrome' not in ua_lower and 'crios' not in ua_lower):
-        browser = 'safari'
-
-        if device == 'ios':
-            version = ios_version
-        else:
-            # Parse Safari version from Version/ string
-            safari_match = re.search(r'Version/(\d+)', user_agent_str, re.IGNORECASE)
-            if safari_match:
-                version = int(safari_match.group(1))
-            else:
-                raise ValueError("cannot parse Safari version from user agent")
-
-    # Everything else is Chromium-based
+    # Check for Chromium-based browsers (Chrome, Edge, etc.)
     elif 'chrome' in ua_lower or 'crios' in ua_lower or 'edg' in ua_lower or 'chromium' in ua_lower:
         if device == 'ios':
             # All browsers on iOS use WebKit
@@ -331,6 +317,21 @@ def get_device_and_browser_from_ua(user_agent_str: str):
                 version = int(chrome_match.group(1))
             else:
                 raise ValueError("cannot parse Chromium version from user agent")
+
+    # Check for Safari/WebKit (on iOS or macOS) - must come after Chrome/Firefox checks
+    elif device == 'ios' or ('safari' in ua_lower and 'chrome' not in ua_lower and 'crios' not in ua_lower):
+        browser = 'safari'
+
+        # Parse Safari version from Version/ string
+        safari_match = re.search(r'Version/(\d+)', user_agent_str, re.IGNORECASE)
+        if safari_match:
+            version = int(safari_match.group(1))
+        else:
+            # No Version/ string found - if iOS, use OS version (e.g., Google App)
+            if device == 'ios':
+                version = ios_version
+            else:
+                raise ValueError("cannot parse Safari version from user agent")
 
     else:
         raise ValueError(f"cannot detect browser core from user agent: {user_agent_str}")
