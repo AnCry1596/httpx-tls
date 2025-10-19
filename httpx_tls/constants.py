@@ -46,7 +46,8 @@ class Http2Constants:
                         4: h2.settings.SettingCodes.INITIAL_WINDOW_SIZE,
                         5: h2.settings.SettingCodes.MAX_FRAME_SIZE,
                         6: h2.settings.SettingCodes.MAX_HEADER_LIST_SIZE,
-                        8: h2.settings.SettingCodes.ENABLE_CONNECT_PROTOCOL}
+                        8: h2.settings.SettingCodes.ENABLE_CONNECT_PROTOCOL,
+                        9: 9}  # SETTINGS_NO_RFC7540_PRIORITIES (RFC 9218) - used by Safari 18+
 
     header_mapping = {'m': b':method',
                       'a': b':authority',
