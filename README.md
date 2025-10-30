@@ -32,18 +32,24 @@ httpx-tls properly supports Python's asynchronous libraries without resorting to
 supported by httpx-tls as well.
 
 5. **Built-in UA Parsing**:
-Unlike traditional TLS clients, httpx-tls does the heavy-lifting for you to create appropriate TLS fingerprints that 
-match the browser you want. Thanks to a comprehensive database created from scraping years worth of open-sourced changes 
-in popular browsers (and some manual testing), you simply need to pass in the user-agent string for which you want the 
-fingerprint for and httpx-tls will automatically use one for the specific device-os-browser combination. Currently, 
-this built-in parsing is supported for Chromium browsers (Opera, Edge, Chrome), Firefox, and Safari. Both desktop and 
-mobile devices' (iOS + android) user-agent strings are supported. A full list of supported browser versions can be found 
+Unlike traditional TLS clients, httpx-tls does the heavy-lifting for you to create appropriate TLS fingerprints that
+match the browser you want. Thanks to a comprehensive database created from scraping years worth of open-sourced changes
+in popular browsers (and some manual testing), you simply need to pass in the user-agent string for which you want the
+fingerprint for and httpx-tls will automatically use one for the specific device-os-browser combination. Currently,
+this built-in parsing is supported for Chromium browsers (Opera, Edge, Chrome), Firefox, and Safari. Both desktop and
+mobile devices' (iOS + android) user-agent strings are supported. A full list of supported browser versions can be found
 later.
 
 6. **Extensible**:
 Browsers and their fingerprints are dynamic and httpx-tls recognizes that. Apart from just parsing user-agents to create
 fingerprints automatically, you can also pass in a custom JA3 string for TLS fingerprint or Akamai string for HTTP/2
 fingerprint and httpx-tls will use that instead.
+
+7. **Random TLS Extension Order** (Enabled by Default):
+httpx-tls automatically randomizes the order of TLS extensions in the ClientHello message to reduce fingerprinting
+and make connections less predictable. This anti-detection feature is enabled by default and helps bypass security
+systems that rely on specific extension patterns. All required extensions are still sent to maintain full protocol
+compatibility, just in a randomized order each time a connection is established.
 
 ## Usage
 
@@ -118,6 +124,29 @@ To use httpx-tls with a custom http2 and TLS fingerprint:
     trio.run(main)
 ```
 
+### Random TLS Extension Order
+
+By default, httpx-tls randomizes the order of TLS extensions to improve anti-detection. This feature is **enabled by default**.
+
+To **disable** randomization if you need exact JA3 fingerprint matching:
+
+```python
+from httpx_tls.profiles import TLSProfile
+from httpx_tls.client import AsyncTLSClient
+
+# Disable randomization in TLSProfile
+tls_config = TLSProfile.create_from_ja3(ja3, randomize_extensions=False)
+
+# Or disable in AsyncTLSClient
+client = AsyncTLSClient(
+    tls_config=tls_config,
+    randomize_tls_extensions=False  # Disable randomization
+)
+```
+
+**Note**: When randomization is enabled (default), each new connection will have a different extension order,
+making your fingerprint less predictable and harder to detect.
+
 ## Precautions (read this section before using httpx-tls)
 
 While I designed httpx-tls to not have obscure surprises in its API, there still are a few differences between httpx-tls 
@@ -164,6 +193,7 @@ The enhanced fingerprint database now supports a comprehensive range of browser 
 
 ## Recent Enhancements
 
+- **Random TLS Extension Order** (NEW): Automatic randomization of TLS extensions enabled by default to reduce fingerprinting
 - **Expanded Browser Coverage**: Added 30+ new browser version ranges based on curl_cffi fingerprint database
 - **Enhanced JA3 Accuracy**: Updated TLS fingerprints with modern extension support
 - **Improved Anti-Detection**: Successfully bypasses Cloudflare protection on sites like audiobooks.com
