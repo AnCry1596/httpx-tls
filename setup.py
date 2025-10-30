@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="httpx-tls",
-    version="0.0.2",
+    version="0.0.2-beta.7",
     author="Charchit Agarwal",
     author_email="charchit.a00@gmail.com",
     url="https://github.com/AnCry1596/httpx-tls/",
