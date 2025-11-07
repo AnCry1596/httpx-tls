@@ -25,6 +25,3 @@ class AsyncTLSClient(AsyncClient):
         request.extensions['h2_profile'] = self.h2_config
         return request
 
-
-
-
